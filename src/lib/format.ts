@@ -57,7 +57,7 @@ export function toResultText(
     })
     .sort((a, b) => a.order - b.order) // DEFAULT_ZONES 순서대로
     .map((row) => `${row.name} - ${row.zoneLabel}`)
-    .join(" / ");
+    .join("\n");
 }
 
 // (참고) groupByZone는 그대로 사용
