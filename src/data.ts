@@ -3,7 +3,7 @@ import type { Person, Zone } from "./types";
 export const DEFAULT_PEOPLE: Person[] = [
   { id: "kdh", name: "김도헌" },
   { id: "rjk", name: "류제경" },
-  { id: "bhj", name: "방효정" },
+  { id: "bhj", name: "방뇨정" },
   { id: "jih", name: "박지환" },
   { id: "pms", name: "박민성" },
   { id: "psm", name: "박상민" },
