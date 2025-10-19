@@ -1,3 +1,4 @@
+// src/features/cleaning/hooks/useAssignments.ts
 import { useMemo, useState } from "react";
 import type { AssignmentMap, Person, PersonId, Zone, ZoneId } from "../types";
 import { toResultText } from "../lib/format";
@@ -14,6 +15,12 @@ export function useAssignments(initialPeople: Person[], initialZones: Zone[]) {
       ) as AssignmentMap
   );
 
+  // ✅ 미배정 인원 목록 (목록에서 배정된 사람 자동 숨김)
+  const unassignedPeople = useMemo(
+    () => people.filter((p) => assign[p.id] == null),
+    [people, assign]
+  );
+
   const resultText = useMemo(
     () => toResultText(people, zones, assign),
     [people, zones, assign]
@@ -25,21 +32,21 @@ export function useAssignments(initialPeople: Person[], initialZones: Zone[]) {
   const onAssignToZone = (zoneId: ZoneId) => {
     if (!selected) return;
     setAssign((prev) => {
-      // 1️⃣ 이미 그 구역에 배정된 사람이 있는지 확인
+      // 한 구역 1명: zoneId에 기존 배정자 있으면 해제 → 새 사람으로 교체
       const alreadyAssignedPerson = Object.entries(prev).find(
         ([, z]) => z === zoneId
       )?.[0];
       if (alreadyAssignedPerson && alreadyAssignedPerson !== selected) {
-        // 기존 배정 해제
-        const updated: AssignmentMap = {
-          ...prev,
-          [alreadyAssignedPerson]: null,
-          [selected]: zoneId,
-        };
-        return updated;
+        return { ...prev, [alreadyAssignedPerson]: null, [selected]: zoneId };
       }
       return { ...prev, [selected]: zoneId };
     });
+  };
+
+  // ✅ 특정 사람 배정 해제(배지 클릭 시 사용)
+  const onUnassignPerson = (pid: PersonId) => {
+    setAssign((prev) => ({ ...prev, [pid]: null }));
+    if (selected === pid) setSelected(null);
   };
 
   const onUnassignSelected = () => {
@@ -60,9 +67,7 @@ export function useAssignments(initialPeople: Person[], initialZones: Zone[]) {
       await navigator.clipboard.writeText(resultText);
       toast("복사 완료", { description: resultText });
     } catch {
-      toast("복사 실패", {
-        description: "브라우저 권한을 확인해주세요.",
-      });
+      toast("복사 실패", { description: "브라우저 권한을 확인해주세요." });
     }
   };
 
@@ -72,6 +77,10 @@ export function useAssignments(initialPeople: Person[], initialZones: Zone[]) {
     assign,
     selected,
     resultText,
+    // ✅ 추가된 반환값
+    unassignedPeople,
+    onUnassignPerson,
+
     onSelectPerson,
     onAssignToZone,
     onUnassignSelected,

@@ -1,14 +1,16 @@
 import { Badge } from "@/components/ui/badge";
-import type { Person, Zone } from "../types";
+import type { Person, PersonId, Zone } from "../types";
 
 export function ZoneCard({
   zone,
   assigned,
   onClick,
+  onUnassign,
 }: {
   zone: Zone;
   assigned: Person[];
   onClick: () => void;
+  onUnassign: (personId: PersonId) => void;
 }) {
   return (
     <div
@@ -20,10 +22,17 @@ export function ZoneCard({
       {assigned.length === 0 ? (
         <p className="text-sm text-muted-foreground">미배정</p>
       ) : (
-        <div className="flex gap-1.5">
+        <div
+          className="flex gap-1.5"
+          role="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            onUnassign(assigned[0].id);
+          }}
+        >
           {assigned.map((p) => (
             <Badge key={p.id} variant="outline" className="rounded-xl text-xs">
-              {p.name}
+              {assigned[0].name}
             </Badge>
           ))}
         </div>

@@ -1,17 +1,19 @@
 // src/features/cleaning/components/ZoneGroupCard.tsx
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import type { Person, Zone, ZoneId } from "../types";
+import type { Person, PersonId, Zone, ZoneId } from "../types";
 import { cn } from "@/lib/utils";
 
 export function ZoneGroupCard({
   baseLabel,
   items,
   onAssign,
+  onUnassign,
 }: {
   baseLabel: string;
   items: Array<{ zone: Zone; roleLabel: string; assigned: Person[] }>;
   onAssign: (zoneId: ZoneId) => void;
+  onUnassign: (personId: PersonId) => void;
 }) {
   return (
     <div className="rounded-2xl border p-3 shadow-sm">
@@ -34,7 +36,14 @@ export function ZoneGroupCard({
             {assigned.length === 0 ? (
               <p className="text-xs text-muted-foreground">미배정</p>
             ) : (
-              <Badge variant="outline" className="rounded-xl text-xs">
+              <Badge
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onUnassign(assigned[0].id);
+                }}
+                variant="outline"
+                className="rounded-xl text-xs"
+              >
                 {assigned[0].name}
               </Badge>
             )}

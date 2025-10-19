@@ -13,6 +13,9 @@ export default function CleaningAssignmentPage() {
     assign,
     selected,
     resultText,
+    onUnassignPerson,
+    onUnassignSelected,
+    unassignedPeople,
     onSelectPerson,
     onAssignToZone,
     onResetAll,
@@ -31,9 +34,10 @@ export default function CleaningAssignmentPage() {
           people={people}
           assign={assign}
           onAssign={onAssignToZone}
+          onUnassign={onUnassignPerson}
         />
         <PersonPicker
-          people={people}
+          people={unassignedPeople}
           selected={selected}
           onSelect={onSelectPerson}
         />

@@ -1,5 +1,5 @@
 // src/features/cleaning/components/ZoneBoard.tsx
-import type { AssignmentMap, Person, Zone, ZoneId } from "../types";
+import type { AssignmentMap, Person, Zone, ZoneId, PersonId } from "../types";
 import { groupByZone } from "../lib/format";
 import { useMemo } from "react";
 import { ZoneCard } from "./ZoneCard";
@@ -103,11 +103,13 @@ export function ZoneBoard({
   people,
   assign,
   onAssign,
+  onUnassign,
 }: {
   zones: Zone[];
   people: Person[];
   assign: AssignmentMap;
   onAssign: (zoneId: ZoneId) => void;
+  onUnassign: (personId: PersonId) => void;
 }) {
   const groupedAssigned = useMemo(
     () => groupByZone(people, zones, assign),
@@ -126,6 +128,7 @@ export function ZoneBoard({
               zone={z}
               assigned={groupedAssigned.get(z.id) ?? []}
               onClick={() => onAssign(z.id)}
+              onUnassign={onUnassign}
             />
           ))}
         </div>
@@ -144,6 +147,7 @@ export function ZoneBoard({
                 assigned: groupedAssigned.get(zone.id) ?? [],
               }))}
               onAssign={onAssign}
+              onUnassign={onUnassign}
             />
           ))}
         </div>
